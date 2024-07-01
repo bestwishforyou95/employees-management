@@ -1,9 +1,8 @@
 import { StateObject } from 'app/store';
 import SelectField from 'components/form/SelectField';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ToolLanguageComponent from '../ToolLanguage';
-import qs from 'qs';
 
 export interface PositionComponentProps {
   indexPosition: number;
@@ -58,7 +57,7 @@ const PositionComponent = ({
 
   useEffect(() => {
     setPosition(JSON.parse(strEmployee)?.positions[indexPosition]);
-  }, [strEmployee]);
+  }, [strEmployee, indexPosition]);
 
   return (
     <>
@@ -108,19 +107,21 @@ const PositionComponent = ({
             </>
           ))
         : null}
-      <div className="flex mt-10">
-        <label className="mr-2 w-1/4">&nbsp;</label>
-        <div className="w-full">
-          <button
-            type="button"
-            onClick={handleAddToolLanguage}
-            className="bg-white-500 hover:bg-white-700 border border-blue-500 text-blue-500 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Add Tool/Language
-          </button>
+      {position?.positionResourceId && (
+        <div className="flex mt-10">
+          <label className="mr-2 w-1/4">&nbsp;</label>
+          <div className="w-full">
+            <button
+              type="button"
+              onClick={handleAddToolLanguage}
+              className="bg-white-500 hover:bg-white-700 border border-blue-500 text-blue-500 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Add Tool/Language
+            </button>
+          </div>
+          <label className="mr-2 w-1/4">&nbsp;</label>
         </div>
-        <label className="mr-2 w-1/4">&nbsp;</label>
-      </div>
+      )}
     </>
   );
 };

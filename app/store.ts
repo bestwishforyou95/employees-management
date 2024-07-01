@@ -4,10 +4,10 @@ import { PositionResource } from 'models/positionResource';
 import employeeReducer from 'slices/employeeSlice';
 import positionResourceReducer from 'slices/positionResourceSlice';
 
-interface EmployeeStateObject {
+export interface EmployeeStateObject {
   employees: Employee[];
 }
-interface PositionResourceStateObject {
+export interface PositionResourceStateObject {
   positionResources: PositionResource[];
 }
 

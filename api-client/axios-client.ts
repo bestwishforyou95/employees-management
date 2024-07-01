@@ -1,15 +1,15 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: '/api',
-  // headers: {
-  //   'Content-Type': 'application/json',
-  // },
+  baseURL: 'http://localhost:3001/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 axiosClient.interceptors.response.use(
   (response) => {
-    return response.data.data;
+    return response.data;
   },
   (error) => {
     return Promise.reject(error);

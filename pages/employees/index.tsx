@@ -1,11 +1,11 @@
-import { unwrapResult } from '@reduxjs/toolkit';
-import { StateObject } from 'app/store';
 import { MainLayout } from 'components/layout';
 import { Employee } from 'models/employee';
+import { GetStaticProps, GetStaticPropsContext } from 'next';
 import Link from 'next/link';
+import qs from 'qs';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getEmployees } from 'slices/employeeSlice';
+import { useDispatch } from 'react-redux';
+import { storeEmployees } from 'slices/employeeSlice';
 
 export interface EmployeesListPageProps {
   employeesList: Employee[];
@@ -13,27 +13,15 @@ export interface EmployeesListPageProps {
 
 const EmployeesListPage = ({ employeesList = [] }: EmployeesListPageProps) => {
   const dispatch = useDispatch();
-
-  const employeeList = useSelector((state: StateObject) => state.employee.employees);
-
   useEffect(() => {
-    try {
-      (async () => {
-        const action: any = getEmployees({ pageSize: 10, pageNumber: 1 });
-        const resultAction = await dispatch(action);
-        unwrapResult(resultAction);
-      })();
-    } catch (error) {
-      console.log('error');
-    }
+    dispatch(storeEmployees(employeesList));
   }, []);
-
   return (
     <div>
       <h1>List Employees</h1>
       <Link href={`/employees/create`}>Add Employee</Link>
       <ul>
-        {employeeList.map((employee, index) => (
+        {employeesList.map((employee, index) => (
           <li key={index}>
             <Link href={`/employees`}>{employee.name}</Link>
           </li>
@@ -43,27 +31,26 @@ const EmployeesListPage = ({ employeesList = [] }: EmployeesListPageProps) => {
   );
 };
 
-// export const getStaticProps: GetStaticProps<EmployeesListPageProps> = async (
-//   context: GetStaticPropsContext,
-// ) => {
-//   const response = await axios.get(
-//     `https://dev-admin-api.6ixgo.com/api/Employees?pageNumber=1&pageSize=10`,
-//   );
-//   if (!response) {
-//     return {
-//       notFound: true,
-//     };
-//   }
-//   return {
-//     props: {
-//       employeesList:
-//         response.data.map((employee: Employee) => ({
-//           name: employee.name,
-//           positions: employee.positions,
-//         })) ?? [],
-//     },
-//   };
-// };
+export const getStaticProps: GetStaticProps<EmployeesListPageProps> = async (
+  context: GetStaticPropsContext,
+) => {
+  const response: any = await fetch(
+    `${process.env.APP_URL}/api/employees?${qs.stringify({ pageNumber: 1, pageSize: 10 })}`,
+  );
+  const datas = await response.json();
+  const result = datas.pageItems ?? datas.data;
+
+  if (!datas) {
+    return {
+      notFound: true,
+    };
+  }
+  return {
+    props: {
+      employeesList: result ?? [],
+    },
+  };
+};
 
 EmployeesListPage.Layout = MainLayout;
 

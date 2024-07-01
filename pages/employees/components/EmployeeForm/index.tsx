@@ -1,10 +1,9 @@
-import { yupResolver } from '@hookform/resolvers/yup';
 import InputField from 'components/form/InputField';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { schema } from '../../schema';
 import PositionComponent from '../Position';
-import qs from 'qs';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { schema } from '@/employees/schema';
 
 export interface EmployeeFormProps {
   onSubmit: Function;
@@ -53,7 +52,7 @@ const EmployeeForm = ({ onSubmit }: EmployeeFormProps) => {
 
   useEffect(() => {
     setEmployee(form.getValues());
-  }, []);
+  }, [form]);
 
   return (
     <form onSubmit={form.handleSubmit(handleSubmit)} className="items-center">
